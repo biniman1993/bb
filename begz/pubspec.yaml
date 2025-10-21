@@ -1,0 +1,67 @@
+name: tehadso
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.1.0+2
+
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"   # supports Dart 3.x
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
+  curved_navigation_bar: ^1.0.3
+  flutter_html: ^3.0.0
+  webview_flutter: ^4.13.0
+  material_floating_search_bar_2: ^0.5.0
+  sliding_up_panel: ^2.0.0+1
+  shared_preferences: ^2.0.15
+  url_launcher: ^6.2.5
+  share_plus: ^7.2.1
+  font_awesome_flutter: ^10.7.0
+  popover: ^0.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path: "assets/logo.jpg"
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/html/
+    - assets/fonts/GeezMahtem.ttf
+    - assets/verses.json
+
+  fonts:
+    - family: GeezMahtem
+      fonts:
+        - asset: fonts/amharic/GeezMahtem.ttf
+          weight: 700
+
+    - family: jiretnn
+      fonts:
+        - asset: fonts/amharic/jiretnn.ttf
+          weight: 900
+
+    - family: Washrabsl
+      fonts:
+        - asset: fonts/amharic/Washrabsl.ttf
+          weight: 800
+
+    - family: Abyssi
+      fonts:
+         - asset: fonts/amharic/AbyssinicaSILnn.ttf
+           weight: 800
