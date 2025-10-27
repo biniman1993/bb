@@ -17,7 +17,7 @@ class ScrollableListView extends StatefulWidget {
   _ScrollableListViewState createState() => _ScrollableListViewState();
 }
 
-class _ScrollableListViewState extends State<ScrollableListView> {
+class _ScrollableListViewState extends State<ScrollableListView> with WidgetsBindingObserver {
   final List<String> titles = [
     'መግቢያ',
     'የሰይጣን ጥረት',
@@ -63,7 +63,39 @@ class _ScrollableListViewState extends State<ScrollableListView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // ✅ Add lifecycle observer
     _loadFavorites();
+    _setFullScreenMode();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // ✅ Remove lifecycle observer
+    super.dispose();
+  }
+
+  void _setFullScreenMode() {
+    // ✅ Make the screen full-screen with edge-to-edge display
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+    
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light, // For iOS
+    ));
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _setFullScreenMode(); // ✅ Restore full-screen mode when app resumes
+    }
   }
 
   void _loadFavorites() async {
@@ -98,6 +130,7 @@ class _ScrollableListViewState extends State<ScrollableListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // ✅ Allow content to extend behind AppBar
       drawer: Mybar(),
       appBar: AppBar(
         flexibleSpace: Container(
@@ -114,7 +147,11 @@ class _ScrollableListViewState extends State<ScrollableListView> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
         title: const Center(
           child: Padding(
             padding: EdgeInsets.only(bottom: 6.0),
@@ -153,10 +190,11 @@ class _ScrollableListViewState extends State<ScrollableListView> {
             ],
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 12),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 12),
             const Text(
               'በእግዚአብሔር ቃል እውነት መኖር!',
               style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 20),
@@ -221,6 +259,7 @@ class _ScrollableListViewState extends State<ScrollableListView> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

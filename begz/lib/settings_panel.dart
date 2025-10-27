@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsBottomPanel extends StatefulWidget {
+  final ValueNotifier<double> fontNotifier; // NEW
   final Function(double) onFontSizeChanged;
   final Function(String) onFontTypeChanged;
   final Function(Color) onBackgroundColorChanged;
@@ -10,6 +11,7 @@ class SettingsBottomPanel extends StatefulWidget {
 
   const SettingsBottomPanel({
     super.key,
+    required this.fontNotifier, // NEW
     required this.onFontSizeChanged,
     required this.onFontTypeChanged,
     required this.onBackgroundColorChanged,
@@ -105,18 +107,24 @@ class _SettingsBottomPanelState extends State<SettingsBottomPanel> {
                   style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 15),
                 ),
                 Expanded(
-                  child: Slider(
-                    value: fontSize,
-                    min: 12,
-                    max: 30,
-                    divisions: 18,
-                    label: fontSize.toStringAsFixed(0),
-                    onChanged: (value) async {
-                      setState(() => fontSize = value);
-                      widget.onFontSizeChanged(value);
+                  child: ValueListenableBuilder<double>(
+                    valueListenable: widget.fontNotifier,
+                    builder: (context, value, _) {
+                      return Slider(
+                        value: value,
+                        min: 12,
+                        max: 50, // optional: match pinch zoom max
+                        divisions: 38, // optional: finer steps
+                        label: value.toStringAsFixed(0),
+                        onChanged: (newValue) async {
+                          widget.fontNotifier.value =
+                              newValue; // update notifier
+                          widget.onFontSizeChanged(newValue);
 
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setDouble('fontSize', value);
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setDouble('fontSize', newValue);
+                        },
+                      );
                     },
                   ),
                 ),

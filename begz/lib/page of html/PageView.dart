@@ -4,7 +4,13 @@ import 'package:tehadso/listoftitile/listoftimhirt.dart';
 import 'package:tehadso/page%20of%20html/flotscreen.dart';
 import 'package:tehadso/settings_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle, SystemUiOverlayStyle;
+import 'package:flutter/services.dart'
+    show
+        rootBundle,
+        SystemUiOverlayStyle,
+        SystemChrome,
+        SystemUiMode,
+        SystemUiOverlay;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +29,8 @@ class HtmlPageView extends StatefulWidget {
   State<HtmlPageView> createState() => _HtmlPageViewState();
 }
 
-class _HtmlPageViewState extends State<HtmlPageView> {
+class _HtmlPageViewState extends State<HtmlPageView>
+    with WidgetsBindingObserver {
   late final PageController _controller;
   final PanelController _panelController = PanelController();
   final ValueNotifier<int> _currentPage = ValueNotifier<int>(0);
@@ -36,6 +43,8 @@ class _HtmlPageViewState extends State<HtmlPageView> {
 
   double fontSize = 17.0;
   double _baseFontSize = 17.0;
+  final ValueNotifier<double> fontNotifier = ValueNotifier<double>(17.0); // NEW
+
   String fontType = 'GeezMahtem';
   Color backgroundColor = Colors.white;
   bool nightMode = false;
@@ -43,11 +52,13 @@ class _HtmlPageViewState extends State<HtmlPageView> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // ✅ Add lifecycle observer
 
     pageFavourites = List.generate(widget.titles.length, (_) => false);
     pageNotes = List.generate(widget.titles.length, (_) => null);
 
     _initializePageController();
+    _setFullScreenMode(); // ✅ Set full-screen mode
 
     loadAllHtmlPages();
     loadVerseTexts();
@@ -55,6 +66,38 @@ class _HtmlPageViewState extends State<HtmlPageView> {
     loadFavouritesAndNotes().then((_) {
       setState(() {});
     });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // ✅ Remove lifecycle observer
+    _controller.dispose();
+    _currentPage.dispose();
+    super.dispose();
+  }
+
+  void _setFullScreenMode() {
+    // ✅ Make the screen full-screen with edge-to-edge display
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light, // For iOS
+    ));
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      _setFullScreenMode(); // ✅ Restore full-screen mode when app resumes
+    }
   }
 
   void _initializePageController() {
@@ -266,19 +309,15 @@ class _HtmlPageViewState extends State<HtmlPageView> {
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    _currentPage.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true, // ✅ Allow content to extend behind AppBar
       drawer: Mybar(),
       appBar: AppBar(
+        //
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
+        backgroundColor: Colors.transparent,
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -347,8 +386,11 @@ class _HtmlPageViewState extends State<HtmlPageView> {
             ),
           ),
         ],
-        backgroundColor: Colors.transparent,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -360,13 +402,15 @@ class _HtmlPageViewState extends State<HtmlPageView> {
           },
           onScaleUpdate: (details) {
             setState(() {
-              // preview the font size change while pinching
               fontSize = (_baseFontSize * details.scale).clamp(12.0, 50.0);
+              fontNotifier.value = fontSize; // 🔹 notify SettingsBottomPanel
             });
           },
-          onScaleEnd: (details) {
-            // Optionally, save the fontSize to SharedPreferences here if you want
+          onScaleEnd: (details) async {
             _baseFontSize = fontSize;
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setDouble(
+                'fontSize', fontSize); // 🔹 persist pinch zoom changes
           },
           child: SlidingUpPanel(
             controller: _panelController,
@@ -375,7 +419,11 @@ class _HtmlPageViewState extends State<HtmlPageView> {
             backdropEnabled: true,
             backdropTapClosesPanel: true,
             panel: SettingsBottomPanel(
-              onFontSizeChanged: (value) => setState(() => fontSize = value),
+              fontNotifier: fontNotifier, // 🔹 NEW
+              onFontSizeChanged: (value) {
+                setState(() => fontSize = value);
+                fontNotifier.value = value; // 🔹 sync with ValueNotifier
+              },
               onFontTypeChanged: (value) => setState(() => fontType = value),
               onBackgroundColorChanged: (value) =>
                   setState(() => backgroundColor = value),
@@ -392,100 +440,126 @@ class _HtmlPageViewState extends State<HtmlPageView> {
                       itemCount: widget.titles.length,
                       itemBuilder: (context, index) {
                         return SingleChildScrollView(
+                          key: ValueKey(
+                              fontSize), // 🔹 Forces rebuild when font size changes
                           padding: EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: fontSize *
-                                  0.5), // Dynamic padding based on font size
-                          child: SelectionArea(
-                            child: Html(
-                              data: htmlContents[index],
-                              onLinkTap: (url, context, attributes) {
-                                if (url != null && url.startsWith('verse:')) {
-                                  final verse = url.replaceFirst('verse:', '');
-                                  showVersePopup(verse);
-                                }
-                              },
-                              style: {
-                                "a": Style(
-                                  color:
-                                      const Color.fromARGB(255, 55, 115, 184),
-                                  textDecoration: TextDecoration.none,
-                                  fontFamily: fontType,
+                            horizontal: 14,
+                            vertical: fontSize * 0.5,
+                          ), // Dynamic padding based on font size
+                          physics: const BouncingScrollPhysics(),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return IntrinsicHeight(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SelectionArea(
+                                      child: Html(
+                                        data: htmlContents[index],
+                                        onLinkTap: (url, context, attributes) {
+                                          if (url != null &&
+                                              url.startsWith('verse:')) {
+                                            final verse =
+                                                url.replaceFirst('verse:', '');
+                                            showVersePopup(verse);
+                                          }
+                                        },
+                                        style: {
+                                          "a": Style(
+                                            color: const Color.fromARGB(
+                                                255, 55, 115, 184),
+                                            textDecoration: TextDecoration.none,
+                                            fontFamily: fontType,
+                                          ),
+                                          "body": Style(
+                                            fontSize: FontSize(fontSize),
+                                            fontFamily: fontType,
+                                            fontWeight: FontWeight.w500,
+                                            color: nightMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            backgroundColor: backgroundColor,
+                                            lineHeight: LineHeight.number(1.5),
+                                            margin: Margins.all(1),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "p": Style(
+                                            fontSize: FontSize(fontSize),
+                                            fontFamily: fontType,
+                                            textAlign: TextAlign.justify,
+                                            color: nightMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            margin: Margins.only(
+                                                top: 0, bottom: 12),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "h2": Style(
+                                            fontSize: FontSize(fontSize + 5),
+                                            fontWeight: FontWeight.w700,
+                                            fontFamily: fontType,
+                                            color: const Color.fromARGB(
+                                                255, 55, 115, 184),
+                                            margin: Margins.only(
+                                                top: 10, bottom: 0),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "h3": Style(
+                                            fontSize: FontSize(fontSize + 4),
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: fontType,
+                                            color: const Color.fromARGB(
+                                                255, 55, 115, 184),
+                                            margin: Margins.only(
+                                                top: 12, bottom: 8),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "ul": Style(
+                                            fontSize: FontSize(fontSize),
+                                            fontFamily: fontType,
+                                            listStyleType:
+                                                ListStyleType.disclosureClosed,
+                                            margin: Margins.only(
+                                                top: 4, bottom: 12, left: 45),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "ol": Style(
+                                            fontSize: FontSize(fontSize),
+                                            fontFamily: fontType,
+                                            margin: Margins.only(
+                                                top: 3, bottom: 12, left: 45),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "li": Style(
+                                            fontSize: FontSize(fontSize - 1),
+                                            fontFamily: fontType,
+                                            margin: Margins.only(bottom: 6),
+                                            padding: HtmlPaddings.zero,
+                                          ),
+                                          "strong": Style(
+                                            fontWeight: FontWeight.bold,
+                                            color: getDynamicFontColor(),
+                                          ),
+                                          "em": Style(
+                                            fontStyle: FontStyle.italic,
+                                            color: nightMode
+                                                ? (backgroundColor ==
+                                                        Colors.black
+                                                    ? Colors.white70
+                                                    : const Color.fromARGB(
+                                                        255, 255, 230, 180))
+                                                : Colors.black87,
+                                          ),
+                                        },
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                        height:
+                                            160), // 🔹 Ensures bottom text is always visible
+                                  ],
                                 ),
-                                "body": Style(
-                                  fontSize: FontSize(fontSize),
-                                  fontFamily: fontType,
-                                  fontWeight: FontWeight.w500,
-                                  color:
-                                      nightMode ? Colors.white : Colors.black,
-                                  backgroundColor: backgroundColor,
-                                  lineHeight: LineHeight.number(1.5),
-                                  margin: Margins.all(1),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "p": Style(
-                                  fontSize: FontSize(fontSize),
-                                  fontFamily: fontType,
-                                  textAlign: TextAlign.justify,
-                                  color:
-                                      nightMode ? Colors.white : Colors.black,
-                                  margin: Margins.only(top: 0, bottom: 12),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "h2": Style(
-                                  fontSize: FontSize(fontSize + 5),
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: fontType,
-                                  color:
-                                      const Color.fromARGB(255, 55, 115, 184),
-                                  margin: Margins.only(top: 10, bottom: 0),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "h3": Style(
-                                  fontSize: FontSize(fontSize + 4),
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: fontType,
-                                  color:
-                                      const Color.fromARGB(255, 55, 115, 184),
-                                  margin: Margins.only(top: 12, bottom: 8),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "ul": Style(
-                                  fontSize: FontSize(fontSize),
-                                  fontFamily: fontType,
-                                  listStyleType: ListStyleType.disclosureClosed,
-                                  margin: Margins.only(
-                                      top: 4, bottom: 12, left: 45),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "ol": Style(
-                                  fontSize: FontSize(fontSize),
-                                  fontFamily: fontType,
-                                  margin: Margins.only(
-                                      top: 3, bottom: 12, left: 45),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "li": Style(
-                                  fontSize: FontSize(fontSize - 1),
-                                  fontFamily: fontType,
-                                  margin: Margins.only(bottom: 6),
-                                  padding: HtmlPaddings.zero,
-                                ),
-                                "strong": Style(
-                                  fontWeight: FontWeight.bold,
-                                  color: getDynamicFontColor(),
-                                ),
-                                "em": Style(
-                                  fontStyle: FontStyle.italic,
-                                  color: nightMode
-                                      ? (backgroundColor == Colors.black
-                                          ? Colors.white70
-                                          : const Color.fromARGB(
-                                              255, 255, 230, 180))
-                                      : Colors.black87,
-                                ),
-                              },
-                            ),
+                              );
+                            },
                           ),
                         );
                       },

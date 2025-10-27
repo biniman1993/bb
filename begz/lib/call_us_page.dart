@@ -11,7 +11,6 @@ class CallUsPage extends StatelessWidget {
     {'name': 'መስመር 2', 'phone': '+251913349609'},
     {'name': 'መስመር 3', 'phone': '+251968155172'},
     {'name': 'መስመር 4', 'phone': '+251913896273'},
-    
   ];
 
   void _makePhoneCall(String phoneNumber) async {
@@ -58,8 +57,9 @@ class CallUsPage extends StatelessWidget {
           // Phone contacts
           ...contacts.map((contact) {
             return Card(
+              color: const Color.fromARGB(255, 252, 252, 252),
               margin: const EdgeInsets.symmetric(vertical: 8),
-              elevation: 4,
+              elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

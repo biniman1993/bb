@@ -103,7 +103,8 @@ class AboutUsScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            iconTheme: const IconThemeData(color: Colors.white),
+            iconTheme:
+                const IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
             toolbarHeight: 70,
             centerTitle: true,
             pinned: true,
@@ -211,7 +212,7 @@ class AboutUsScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         const Text(
-                          "ፓ/ር አቤቤ ደጀኔ",
+                          "ፓ/ር አበበ ደጀኔ",
                           style: TextStyle(
                             color: Color.fromARGB(255, 9, 131, 115),
                             fontSize: 20,
@@ -285,6 +286,16 @@ class AboutUsScreen extends StatelessWidget {
                   name: "ዱከም",
                   phone: "0913896273",
                   location: "Dukem, Ethiopia",
+                ),
+                _buildChurchCard(
+                  name: "ቡሻና",
+                  phone: "0926119792",
+                  location: "Bushana, Ethiopia",
+                ),
+                _buildChurchCard(
+                  name: "ጋቦ",
+                  phone: "0912787929",
+                  location: "hossana, Ethiopia",
                 ),
 
                 const SizedBox(height: 30),

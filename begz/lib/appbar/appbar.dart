@@ -1,15 +1,15 @@
-import 'package:tehadso/icons/aboutUsScreen.dart';
-import 'package:tehadso/icons/emailUsScreen.dart';
-import 'package:tehadso/icons/favoriteListPage.dart';
-import 'package:tehadso/icons/about_developer_screen.dart';
-import 'package:tehadso/icons/call_us_page.dart';
-import 'package:tehadso/icons/favourit.dart';
-import 'package:tehadso/icons/note.dart';
-import 'package:tehadso/icons/rateapp.dart';
-import 'package:tehadso/icons/share_app_page.dart';
-import 'package:tehadso/icons/showExitDialog.dart';
-import 'package:tehadso/icons/socialmedia.dart';
 import 'package:flutter/material.dart';
+import 'package:tehadso/aboutUsScreen.dart';
+import 'package:tehadso/about_developer_screen.dart';
+import 'package:tehadso/call_us_page.dart';
+import 'package:tehadso/emailUsScreen.dart';
+import 'package:tehadso/favoriteListPage.dart';
+import 'package:tehadso/favourit.dart';
+import 'package:tehadso/note.dart';
+import 'package:tehadso/rateapp.dart';
+import 'package:tehadso/share_app_page.dart';
+import 'package:tehadso/showExitDialog.dart';
+import 'package:tehadso/socialmedia.dart';
 
 class Mybar extends StatelessWidget {
   Mybar({super.key});

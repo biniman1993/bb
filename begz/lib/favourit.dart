@@ -116,20 +116,17 @@ class _FavoritesPageState extends State<FavoritesPage> {
               itemBuilder: (context, index) {
                 final i = favoriteIndexes[index];
                 return Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  color: const Color.fromARGB(255, 252, 252, 252),
+                  elevation: 2,
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
-                      vertical: 12,
+                      vertical: 2,
                     ),
                     title: Text(
                       widget.titles[i],
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 16,
                         fontFamily: 'GeezMahtem',
                         fontWeight: FontWeight.w600,
                       ),

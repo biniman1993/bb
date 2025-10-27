@@ -109,7 +109,7 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
           ? const Center(
               child: Text(
                 'ምንም አልተገኙም።',
-                style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 20),
+                style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 18),
               ),
             )
           : ListView.builder(
@@ -117,6 +117,7 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
               itemBuilder: (context, index) {
                 final title = _favorites[index];
                 return Card(
+                  color: const Color.fromARGB(255, 252, 252, 252),
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 8,
@@ -133,7 +134,7 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.delete,
-                        color: Color.fromARGB(255, 41, 38, 37),
+                        color: Color.fromARGB(255, 48, 45, 44),
                       ),
                       onPressed: () => _removeFavorite(title),
                     ),

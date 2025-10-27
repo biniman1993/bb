@@ -71,8 +71,9 @@ class SocialMediaScreen extends StatelessWidget {
               ),
               // Telegram Card
               Card(
+                color: const Color.fromARGB(255, 252, 252, 252),
                 margin: const EdgeInsets.symmetric(vertical: 8),
-                elevation: 4,
+                elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -89,8 +90,9 @@ class SocialMediaScreen extends StatelessWidget {
               ),
               // Facebook Card
               Card(
+                color: const Color.fromARGB(255, 252, 252, 252),
                 margin: const EdgeInsets.symmetric(vertical: 8),
-                elevation: 4,
+                elevation: 2,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
