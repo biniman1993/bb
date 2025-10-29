@@ -77,7 +77,6 @@ class _HtmlPageViewState extends State<HtmlPageView>
   }
 
   void _setFullScreenMode() {
-    // ✅ Make the screen full-screen with edge-to-edge display
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.edgeToEdge,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
@@ -86,9 +85,9 @@ class _HtmlPageViewState extends State<HtmlPageView>
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.dark, // ✅ Keep this as DARK
       systemNavigationBarIconBrightness: Brightness.dark,
-      statusBarBrightness: Brightness.light, // For iOS
+      statusBarBrightness: Brightness.light,
     ));
   }
 
@@ -315,7 +314,14 @@ class _HtmlPageViewState extends State<HtmlPageView>
       drawer: Mybar(),
       appBar: AppBar(
         //
-        iconTheme: const IconThemeData(color: Colors.white),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // ✅ Keep this as LIGHT
+          statusBarBrightness: Brightness.dark,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         elevation: 0,
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(
@@ -386,11 +392,6 @@ class _HtmlPageViewState extends State<HtmlPageView>
             ),
           ),
         ],
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          statusBarBrightness: Brightness.light,
-        ),
       ),
       body: SafeArea(
         child: GestureDetector(

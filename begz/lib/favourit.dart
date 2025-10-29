@@ -23,7 +23,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent, // transparent status bar
         statusBarIconBrightness: Brightness.light, // white icons
-        statusBarBrightness: Brightness.light,
+        statusBarBrightness:
+            Brightness.dark, // ✅ Changed to dark for consistency
       ),
     );
 
@@ -70,7 +71,15 @@ class _FavoritesPageState extends State<FavoritesPage> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        elevation: 0,
         title: const Text(
           "የተወደዱ ትምህርቶች",
           style: TextStyle(
@@ -79,6 +88,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             fontFamily: 'GeezMahtem',
           ),
         ),
+        centerTitle: true, // ✅ Added for consistency
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -91,6 +101,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ),
           ),
         ),
+        backgroundColor: Colors.transparent, // ✅ Added for consistency
         actions: [
           if (favoriteIndexes.isNotEmpty)
             Padding(

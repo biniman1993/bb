@@ -26,6 +26,12 @@ class CallUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // ✅ Fixed: Proper system overlay style
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark, // ✅ Fixed: Explicitly set
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "እኛን ለማገኘት",
@@ -33,6 +39,7 @@ class CallUsPage extends StatelessWidget {
             color: Colors.white,
             fontFamily: 'GeezMahtem',
             fontSize: 18,
+            fontWeight: FontWeight.bold, // ✅ Added for consistency
           ),
         ),
         flexibleSpace: Container(
@@ -49,7 +56,7 @@ class CallUsPage extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        centerTitle: true, // ✅ Added for consistency
       ),
       body: ListView(
         padding: const EdgeInsets.all(12),

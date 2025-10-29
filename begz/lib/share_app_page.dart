@@ -90,6 +90,12 @@ class ShareAppPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // ✅ Fixed: Proper system overlay style
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark, // ✅ Fixed: Explicitly set
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'መተግበሪያን አጋራ',
@@ -114,7 +120,7 @@ class ShareAppPage extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        centerTitle: true, // ✅ Added for consistency
       ),
       body: ListView.builder(
         itemCount: platforms.length,

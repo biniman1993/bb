@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tehadso/home2.dart'; // Photos onboarding
-import 'package:tehadso/listoftitile/listoftimhirt.dart'; // Main screen
+import 'package:tehadso/home2.dart';
+import 'package:tehadso/listoftitile/listoftimhirt.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,40 +12,59 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Preload splash image for smooth display
-    precacheImage(const AssetImage('assets/splash.jpg'), context);
+    precacheImage(const AssetImage('assets/splash1.png'), context);
   }
 
   @override
   void initState() {
     super.initState();
 
-    // ✅ Immediately set full-screen with white icons
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // ✅ COMPLETELY HIDE status bar and navigation bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // Transparent status bar
-      systemNavigationBarColor: Colors.transparent, // Transparent nav bar
-      statusBarIconBrightness: Brightness.light, // White icons
-      systemNavigationBarIconBrightness: Brightness.light, // White nav icons
-      statusBarBrightness: Brightness.dark, // For iOS
-    ));
+    // Initialize animations
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.1, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    // Start animation
+    _controller.forward();
 
     // Start navigation after delay
     _navigateAfterDelay();
   }
 
   Future<void> _navigateAfterDelay() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
     final prefs = await SharedPreferences.getInstance();
     final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
     final lastPage = prefs.getInt('last_opened_page');
 
     if (!mounted) return;
+
+    // ✅ RESTORE normal system UI before navigation
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
 
     if (hasSeenOnboarding && lastPage != null) {
       _navigateTo(ScrollableListView(lastPage: lastPage));
@@ -66,26 +85,38 @@ class _SplashScreenState extends State<SplashScreen> {
             FadeTransition(opacity: animation, child: child),
       ),
     );
+  }
 
-    // ✅ Restore normal system UI after leaving splash
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Make sure the splash image covers the full screen
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(
-              'assets/splash.jpg',
-              fit: BoxFit.cover,
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _fadeAnimation.value,
+            child: Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/splash1.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

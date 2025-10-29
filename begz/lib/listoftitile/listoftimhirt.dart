@@ -17,7 +17,8 @@ class ScrollableListView extends StatefulWidget {
   _ScrollableListViewState createState() => _ScrollableListViewState();
 }
 
-class _ScrollableListViewState extends State<ScrollableListView> with WidgetsBindingObserver {
+class _ScrollableListViewState extends State<ScrollableListView>
+    with WidgetsBindingObserver {
   final List<String> titles = [
     'መግቢያ',
     'የሰይጣን ጥረት',
@@ -80,7 +81,7 @@ class _ScrollableListViewState extends State<ScrollableListView> with WidgetsBin
       SystemUiMode.edgeToEdge,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
     );
-    
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       systemNavigationBarColor: Colors.transparent,
@@ -195,71 +196,71 @@ class _ScrollableListViewState extends State<ScrollableListView> with WidgetsBin
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 12),
-            const Text(
-              'በእግዚአብሔር ቃል እውነት መኖር!',
-              style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 20),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: titles.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    elevation: 4,
-                    shadowColor: const Color.fromARGB(255, 2, 2, 2),
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    color: index % 2 == 0
-                        ? const Color.fromARGB(255, 241, 241, 241)
-                        : const Color.fromARGB(255, 245, 244, 247),
-                    child: ListTile(
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(25),
-                        child: Image.asset(
-                          defaultImage,
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.cover,
-                        ),
+              const Text(
+                'በእግዚአብሔር ቃል እውነት መኖር!',
+                style: TextStyle(fontFamily: 'GeezMahtem', fontSize: 20),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: titles.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      elevation: 4,
+                      shadowColor: const Color.fromARGB(255, 2, 2, 2),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                      title: Text(
-                        _truncateTitle(titles[index]),
-                        style: const TextStyle(
-                          fontFamily: 'GeezMahtem',
-                          fontWeight: FontWeight.bold,
+                      color: index % 2 == 0
+                          ? const Color.fromARGB(255, 241, 241, 241)
+                          : const Color.fromARGB(255, 245, 244, 247),
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(25),
+                          child: Image.asset(
+                            defaultImage,
+                            width: 45,
+                            height: 45,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          _isFavorite(titles[index])
-                              ? Icons.bookmark
-                              : Icons.bookmark_border,
-                          color: _isFavorite(titles[index])
-                              ? const Color.fromARGB(255, 80, 79, 79)
-                              : const Color.fromARGB(255, 102, 102, 102),
+                        title: Text(
+                          _truncateTitle(titles[index]),
+                          style: const TextStyle(
+                            fontFamily: 'GeezMahtem',
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        onPressed: () {
-                          _toggleFavorite(titles[index]);
+                        trailing: IconButton(
+                          icon: Icon(
+                            _isFavorite(titles[index])
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            color: _isFavorite(titles[index])
+                                ? const Color.fromARGB(255, 80, 79, 79)
+                                : const Color.fromARGB(255, 102, 102, 102),
+                          ),
+                          onPressed: () {
+                            _toggleFavorite(titles[index]);
+                          },
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HtmlPageView(
+                                  startIndex: index, titles: titles),
+                            ),
+                          );
                         },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                HtmlPageView(startIndex: index, titles: titles),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -270,7 +271,7 @@ void showUpdateDialog(BuildContext context) {
   // Telegram launcher function
   Future<void> _openTelegram() async {
     final Uri tgUrl = Uri.parse("tg://resolve?domain=ReformationLife_Join");
-    final Uri webUrl = Uri.parse("https://t.me/ReformationLife_Join");
+    final Uri webUrl = Uri.parse("https://t.me/ReformationLife_Join/119/517");
 
     if (await canLaunchUrl(tgUrl)) {
       await launchUrl(tgUrl, mode: LaunchMode.externalApplication);

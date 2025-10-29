@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
@@ -103,8 +104,15 @@ class AboutUsScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            iconTheme:
-                const IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: Colors.transparent,
+              statusBarIconBrightness: Brightness.light, // white icons
+              statusBarBrightness: Brightness.dark,
+              // iOS fix
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white,
+            ),
             toolbarHeight: 70,
             centerTitle: true,
             pinned: true,

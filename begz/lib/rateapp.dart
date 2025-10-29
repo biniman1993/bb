@@ -13,6 +13,19 @@ class _RateAppScreenState extends State<RateAppScreen> {
   int _selectedRating = 0;
   bool _submitted = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Fixed: Consistent status bar configuration
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light, // white icons
+        statusBarBrightness: Brightness.dark, // ✅ Fixed: Changed to dark
+      ),
+    );
+  }
+
   void _setRating(int rating) {
     setState(() {
       _selectedRating = rating;
@@ -53,17 +66,20 @@ class _RateAppScreenState extends State<RateAppScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // ✅ Fixed: Proper system overlay style
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark, // ✅ Fixed: Explicitly set
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 9),
-          child: const Text(
-            'Rate Us',
-            style: TextStyle(
-              fontFamily: 'GeezMahtem',
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+        title: const Text(
+          'Rate Us',
+          style: TextStyle(
+            fontFamily: 'GeezMahtem',
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
         flexibleSpace: Container(
@@ -80,7 +96,7 @@ class _RateAppScreenState extends State<RateAppScreen> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        centerTitle: true, // ✅ Added for consistency
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),

@@ -94,6 +94,12 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark,
+          // iOS fix
+        ),
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -111,7 +117,6 @@ class _NotesPageState extends State<NotesPage> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         title: const Text(
           'ማስታወሻዎች',
           style: TextStyle(

@@ -18,6 +18,14 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
   @override
   void initState() {
     super.initState();
+    // ✅ Fixed: Consistent status bar configuration
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light, // white icons
+        statusBarBrightness: Brightness.dark, // ✅ Fixed: Changed to dark
+      ),
+    );
     _loadFavorites();
   }
 
@@ -63,6 +71,12 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // ✅ Fixed: Proper system overlay style
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark, // ✅ Fixed: Explicitly set
+        ),
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
@@ -80,7 +94,6 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         title: const Text(
           'ምልክት የተደረጉ ገፆች',
           style: TextStyle(
@@ -95,7 +108,8 @@ class _FavoritesListPageState extends State<FavoritesListPage> {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 15, top: 13),
             child: IconButton(
-              icon: const Icon(Icons.delete_sweep),
+              icon: const Icon(Icons.delete_sweep,
+                  color: Colors.white), // ✅ Fixed: Added white color
               onPressed: () {
                 if (_favorites.isNotEmpty) {
                   _showClearAllConfirmationDialog();

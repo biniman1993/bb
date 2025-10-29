@@ -27,7 +27,7 @@ void showExitDialog(BuildContext context) {
                 const Icon(
                   Icons.exit_to_app,
                   size: 50,
-                  color: Colors.redAccent,
+                  color: Color.fromARGB(255, 73, 79, 114),
                 ),
                 const SizedBox(height: 12),
                 const Text(
@@ -45,7 +45,7 @@ void showExitDialog(BuildContext context) {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
+                        backgroundColor: Color.fromARGB(255, 73, 79, 114),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),

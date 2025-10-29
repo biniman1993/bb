@@ -68,7 +68,7 @@ class _PageActionOverlayState extends State<PageActionOverlay> {
                   const Icon(
                     Icons.note_alt_outlined,
                     size: 50,
-                    color: Colors.orange,
+                    color: Color.fromARGB(255, 255, 255, 255),
                   ),
                   const SizedBox(height: 6),
                   const Text(
@@ -103,7 +103,7 @@ class _PageActionOverlayState extends State<PageActionOverlay> {
                         child: const Text(
                           "ሰርዝ",
                           style: TextStyle(
-                            color: Colors.orange,
+                            color: Color.fromARGB(255, 73, 79, 114),
                             fontSize: 16,
                             fontFamily: 'GeezMahtem',
                           ),
@@ -113,7 +113,7 @@ class _PageActionOverlayState extends State<PageActionOverlay> {
                         padding: const EdgeInsets.only(right: 20),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
+                            backgroundColor: Color.fromARGB(255, 73, 79, 114),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -197,7 +197,10 @@ class _PageActionOverlayState extends State<PageActionOverlay> {
                     _closeFab();
                   },
                   backgroundColor: Colors.orange,
-                  child: const Icon(Icons.note_add),
+                  child: const Icon(
+                    Icons.note_add,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 FloatingActionButton(

@@ -23,17 +23,15 @@ class EmailUsScreen extends StatelessWidget {
       if (await canLaunchUrl(emailLaunchUri)) {
         await launchUrl(
           emailLaunchUri,
-          mode: LaunchMode.externalApplication, // important!
+          mode: LaunchMode.externalApplication,
         );
       } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('No email app found!')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('No email app found!')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -50,6 +48,11 @@ class EmailUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent, // ✅ FIXED
+          statusBarIconBrightness: Brightness.light, // ✅ FIXED
+          statusBarBrightness: Brightness.dark, // ✅ FIXED
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -65,7 +68,6 @@ class EmailUsScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         title: const Text(
           'ኢሜል ይላኩልን',
           style: TextStyle(

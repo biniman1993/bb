@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class AboutDeveloperScreen extends StatelessWidget {
   const AboutDeveloperScreen({super.key});
@@ -22,7 +23,15 @@ class AboutDeveloperScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6FA),
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark,
+          // iOS fix
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         elevation: 0,
         title: const Text(
           "About Developer",

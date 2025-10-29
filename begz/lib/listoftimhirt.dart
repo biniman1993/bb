@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tehadso/appbar/appbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 String noteText = '';
@@ -61,6 +62,7 @@ class _ScrollableListViewState extends State<ScrollableListView> {
   void initState() {
     super.initState();
     _loadFavorites();
+    _setFullScreenMode();
   }
 
   void _loadFavorites() async {
@@ -68,6 +70,21 @@ class _ScrollableListViewState extends State<ScrollableListView> {
     setState(() {
       _favoriteTitles = prefs.getStringList('favorites') ?? [];
     });
+  }
+
+  void _setFullScreenMode() {
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light, // ✅ White icons
+      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.dark, // ✅ Dark background context
+    ));
   }
 
   void _toggleFavorite(String title) async {
@@ -95,8 +112,18 @@ class _ScrollableListViewState extends State<ScrollableListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: Mybar(),
+      drawer: Mybar(),
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light, // white icons
+          statusBarBrightness: Brightness.dark,
+          // iOS fix
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -111,7 +138,6 @@ class _ScrollableListViewState extends State<ScrollableListView> {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
         title: const Center(
           child: Padding(
             padding: EdgeInsets.only(bottom: 6.0),
