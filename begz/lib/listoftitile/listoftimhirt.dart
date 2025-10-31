@@ -133,6 +133,7 @@ class _ScrollableListViewState extends State<ScrollableListView>
     return Scaffold(
       extendBodyBehindAppBar: true, // ✅ Allow content to extend behind AppBar
       drawer: Mybar(),
+
       appBar: AppBar(
         flexibleSpace: Container(
           decoration: const BoxDecoration(
