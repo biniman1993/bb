@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // ✅ Set global scaffold theme for edge-to-edge
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: Photos(),
+      home: SplashScreen(),
     );
   }
 }

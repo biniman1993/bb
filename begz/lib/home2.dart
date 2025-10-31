@@ -1,6 +1,6 @@
-import 'package:tehadso/listoftitile/listoftimhirt.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tehadso/listoftimhirt.dart';
 
 class Photos extends StatefulWidget {
   const Photos({super.key});
@@ -69,7 +69,7 @@ class _PhotosState extends State<Photos> with SingleTickerProviderStateMixin {
         body: CustomScrollView(
           slivers: [
             SliverAppBar(
-              expandedHeight: MediaQuery.of(context).size.height * 0.5,
+              expandedHeight: 300,
               stretch: true,
               flexibleSpace: FlexibleSpaceBar(
                 stretchModes: const [

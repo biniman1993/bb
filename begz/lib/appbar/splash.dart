@@ -1,214 +1,122 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tehadso/listoftimhirt.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tehadso/home2.dart';
+import 'package:tehadso/listoftitile/listoftimhirt.dart';
 
-class Photos extends StatefulWidget {
-  const Photos({super.key});
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
-  State<Photos> createState() => _PhotosState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _PhotosState extends State<Photos> with SingleTickerProviderStateMixin {
-  late PageController pageController;
-  late AnimationController _arrowController;
-  late Animation<Offset> _arrowAnimation;
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(const AssetImage('assets/splash1.jpg'), context);
+  }
 
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: 1, viewportFraction: 0.6);
 
-    // Arrow animation setup
-    _arrowController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1))
-          ..repeat(reverse: true);
+    // ✅ COMPLETELY HIDE status bar and navigation bar
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    _arrowAnimation = Tween<Offset>(
-            begin: const Offset(0, 0), end: const Offset(0.2, 0))
-        .animate(
-            CurvedAnimation(parent: _arrowController, curve: Curves.easeInOut));
+    // Initialize animations
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 1.1, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    // Start animation
+    _controller.forward();
+
+    // Start navigation after delay
+    _navigateAfterDelay();
   }
 
-  @override
-  void dispose() {
-    pageController.dispose();
-    _arrowController.dispose();
-    super.dispose();
+  Future<void> _navigateAfterDelay() async {
+    await Future.delayed(const Duration(seconds: 3));
+    final prefs = await SharedPreferences.getInstance();
+    final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    final lastPage = prefs.getInt('last_opened_page');
+
+    if (!mounted) return;
+
+    // ✅ RESTORE normal system UI before navigation
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.edgeToEdge,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
+
+    if (hasSeenOnboarding && lastPage != null) {
+      _navigateTo(ScrollableListView(lastPage: lastPage));
+    } else if (hasSeenOnboarding) {
+      _navigateTo(const ScrollableListView());
+    } else {
+      _navigateTo(const Photos());
+    }
   }
 
-  void _navigateToNextScreen() {
-    Navigator.push(
+  void _navigateTo(Widget page) {
+    Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const ScrollableListView(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-          final tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          final offsetAnimation = animation.drive(tween);
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
+        transitionDuration: const Duration(milliseconds: 800),
+        pageBuilder: (_, __, ___) => page,
+        transitionsBuilder: (_, animation, __, child) =>
+            FadeTransition(opacity: animation, child: child),
       ),
     );
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity != null &&
-            details.primaryVelocity! < -100) {
-          _navigateToNextScreen();
-        }
-      },
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              expandedHeight: MediaQuery.of(context).size.height * 0.5,
-              stretch: true,
-              flexibleSpace: FlexibleSpaceBar(
-                stretchModes: const [
-                  StretchMode.zoomBackground,
-                  StretchMode.blurBackground,
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _fadeAnimation.value,
+            child: Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/splash1.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ],
-                background: Image.asset(
-                  'assets/sle.jpg',
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center,
-                ),
-              ),
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              pinned: false,
-              floating: false,
-              snap: false,
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color.fromARGB(255, 227, 230, 240),
-                      Color.fromARGB(255, 194, 199, 198),
-                    ],
-                  ),
-                ),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: 8),
-                      const Text(
-                        'በእግዚአብሔር ቃል',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'GeezMahtem',
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'እውነት መኖር!!!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'GeezMahtem',
-                          color: Color.fromARGB(255, 15, 153, 146),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'ይህ በእግዚአብሔር ቃል እውነት መኖር የሚል ትምህርት በመንፈስ ቅዱስ ምሪት '
-                        'በመታገዝ በተሐድሶ ህይወት አለም አቀፍ ቤተ-ክርስቲያን ተጽፎ የተዘጋጀ ትምህርት ነው፡፡ '
-                        'ቤተ-ክርስቲያን በምድር ዘመኗ መመራትና መኖር የሚገባት መጽሐፍ  ቅዱስ '
-                        'በሚሰጣት ሰማያዊ ስርዓትና ህግ መሰረት ነው፤ እንጂ በምድራዊ ስርዓት አይደለም። '
-                        'በመሆኑም ትምህርቱም በዋናነት በዚህ ዘመን ያለችሁ ቤተ-ክርስቲያን የለቀቀቻቸውን መጽሐፍ ቅዱሳዊ እውነቶች እያሳየን፤ እነዚህን እውነቶች በመልቀቋም ያጣችውን በረከቶች ይነግረናል:: ትምህርቱም መጽሀፍ ቅዱሳችንን መሰረት አድርጎ ከተሐድሶ አላማ አንጻር የተዘጋጀ ነው፡፡',
-                        textAlign: TextAlign.justify,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: 'GeezMahtem',
-                          color: Colors.black,
-                          height: 1.6,
-                        ),
-                      ),
-                      const SizedBox(height: 19),
-                      GestureDetector(
-                        onTap: _navigateToNextScreen,
-                        child: Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 20),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Color.fromARGB(255, 177, 212, 212),
-                                    Color.fromARGB(255, 131, 128, 125),
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    spreadRadius: 3,
-                                    blurRadius: 6,
-                                    offset: const Offset(3, 4),
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Text(
-                                    'እንቀጥል',
-                                    style: TextStyle(
-                                      fontFamily: 'GeezMahtem',
-                                      fontSize: 25,
-                                      color: Color.fromARGB(255, 37, 37, 37),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  SlideTransition(
-                                    position: _arrowAnimation,
-                                    child: const Padding(
-                                      padding: EdgeInsets.only(top: 2),
-                                      child: FaIcon(
-                                        FontAwesomeIcons.arrowRight,
-                                        color: Color.fromARGB(255, 31, 30, 30),
-                                        size: 30,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
               ),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
