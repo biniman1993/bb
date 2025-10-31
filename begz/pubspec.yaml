@@ -70,15 +70,11 @@ flutter:
 
 
 flutter_native_splash:
-  image: assets/logo2.jpg      # ①
+  image: assets/logo1.jpg      # ①
   color: "#000000"
   android: true
   ios: false
   fullscreen: true
   android_gravity: fill
   ios_content_mode: scaleAspectFill
-  android_12:
-    image: assets/logo2.jpg  # ②
-    color: "#000000"
-    android_gravity: fill
-  web: false
+ 

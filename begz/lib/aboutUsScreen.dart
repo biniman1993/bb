@@ -39,8 +39,9 @@ class AboutUsScreen extends StatelessWidget {
     required String location,
   }) {
     return Card(
+      color: const Color.fromARGB(255, 250, 252, 251),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      elevation: 6,
+      elevation: 2,
       shadowColor: Colors.deepPurple.withOpacity(0.3),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
@@ -205,13 +206,15 @@ class AboutUsScreen extends StatelessWidget {
                   ),
                 ),
                 // 🔹 Pastor Info
+                const SizedBox(height: 10),
+
                 Card(
+                  color: const Color.fromARGB(255, 250, 252, 251),
                   margin: const EdgeInsets.symmetric(
                     vertical: 10,
                     horizontal: 16,
                   ),
-                  elevation: 8,
-                  shadowColor: Colors.deepPurple.withOpacity(0.2),
+                  elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),

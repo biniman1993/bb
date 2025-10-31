@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tehadso/appbar/splash.dart';
 import 'package:tehadso/utils/edge_to_edge_helper.dart';
 
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
         // ✅ Set global scaffold theme for edge-to-edge
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: SplashScreen(),
+      home: Photos(),
     );
   }
 }

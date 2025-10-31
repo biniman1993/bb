@@ -155,13 +155,13 @@ class _ScrollableListViewState extends State<ScrollableListView>
         ),
         title: const Center(
           child: Padding(
-            padding: EdgeInsets.only(bottom: 6.0),
+            padding: EdgeInsets.only(bottom: 4.0),
             child: Text(
               'መነሻ ገፅ',
               style: TextStyle(
                 fontFamily: 'GeezMahtem',
                 color: Color.fromARGB(255, 253, 252, 252),
-                fontSize: 25,
+                fontSize: 23,
                 fontWeight: FontWeight.bold,
               ),
             ),
