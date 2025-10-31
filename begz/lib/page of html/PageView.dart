@@ -341,13 +341,30 @@ class _HtmlPageViewState extends State<HtmlPageView>
           child: ValueListenableBuilder<int>(
             valueListenable: _currentPage,
             builder: (_, page, __) {
-              return Text(
-                widget.titles[page],
-                style: const TextStyle(
-                  fontFamily: 'jiretnn',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 26,
-                  color: Color.fromARGB(255, 252, 252, 252),
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                transitionBuilder: (child, animation) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.0, -0.5),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: Text(
+                  key: ValueKey(
+                      widget.titles[page]), // Important for AnimatedSwitcher
+                  widget.titles[page],
+                  style: const TextStyle(
+                    fontFamily: 'jiretnn',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 26,
+                    color: Color.fromARGB(255, 252, 252, 252),
+                  ),
                 ),
               );
             },
@@ -579,15 +596,15 @@ class _HtmlPageViewState extends State<HtmlPageView>
               ScaffoldMessenger.of(
                 context,
               ).showSnackBar(const SnackBar(content: Text("Note Saved!")));
-              print("Note button clicked on page $page, not implemented yet.");
+              // print("Note button clicked on page $page, not implemented yet.");
             },
             onFavouriteToggled: (isFav) {
               setState(() => pageFavourites[page] = isFav);
               saveFavourites();
-              print("Favourite toggled on page $page: $isFav");
+              //print("Favourite toggled on page $page: $isFav");
             },
             onMark: () {
-              print("Mark clicked on page $page");
+              //print("Mark clicked on page $page");
             },
           );
         },

@@ -29,7 +29,7 @@ class AboutUsScreen extends StatelessWidget {
     if (await canLaunchUrl(mapUri)) {
       await launchUrl(mapUri, mode: LaunchMode.externalApplication);
     } else {
-      print("Could not launch $mapUri");
+      //print("Could not launch $mapUri");
     }
   }
 

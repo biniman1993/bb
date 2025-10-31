@@ -144,10 +144,38 @@ class _SettingsBottomPanelState extends State<SettingsBottomPanel> {
                 DropdownButton<String>(
                   value: fontType,
                   items: const [
-                    DropdownMenuItem(value: 'GeezMahtem', child: Text('Geez')),
-                    DropdownMenuItem(value: 'jiretnn', child: Text('Jiretnn')),
-                    DropdownMenuItem(value: 'Washrabsl', child: Text('Washr')),
-                    DropdownMenuItem(value: 'Abyssi', child: Text('Abyssi')),
+                    DropdownMenuItem(
+                        value: 'GeezMahtem',
+                        child: Text(
+                          'ግዕዝ',
+                          style: TextStyle(
+                            fontFamily: 'GeezMahtem',
+                          ),
+                        )),
+                    DropdownMenuItem(
+                        value: 'jiretnn',
+                        child: Text(
+                          'ኒያላ',
+                          style: TextStyle(
+                            fontFamily: 'jiretnn',
+                          ),
+                        )),
+                    DropdownMenuItem(
+                        value: 'Washrabsl',
+                        child: Text(
+                          'ዋሸር',
+                          style: TextStyle(
+                            fontFamily: 'Washrabsl',
+                          ),
+                        )),
+                    DropdownMenuItem(
+                        value: 'Abyssi',
+                        child: Text(
+                          'አቢሲኒካ',
+                          style: TextStyle(
+                            fontFamily: 'Abyssi',
+                          ),
+                        )),
                   ],
                   onChanged: (String? value) {
                     if (value == null) return; // ignore null
