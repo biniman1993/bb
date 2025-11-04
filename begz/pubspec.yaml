@@ -12,18 +12,14 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  google_fonts: ^6.2.1
-  curved_navigation_bar: ^1.0.3
   flutter_html: ^3.0.0
   webview_flutter: ^4.13.0
-  material_floating_search_bar_2: ^0.5.0
   sliding_up_panel: ^2.0.0+1
   shared_preferences: ^2.0.15
   url_launcher: ^6.2.5
   share_plus: ^7.2.1
   font_awesome_flutter: ^10.7.0
-  popover: ^0.3.1
-  flutter_native_splash: ^2.4.7
+  material_floating_search_bar_2: ^0.5.0
 
 
 dev_dependencies:
@@ -68,13 +64,3 @@ flutter:
          - asset: fonts/amharic/AbyssinicaSILnn.ttf
            weight: 800
 
-
-flutter_native_splash:
-  image: assets/logo1.jpg      # ①
-  color: "#000000"
-  android: true
-  ios: false
-  fullscreen: true
-  android_gravity: fill
-  ios_content_mode: scaleAspectFill
- 

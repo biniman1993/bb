@@ -77,9 +77,10 @@ class _ScrollableListViewState extends State<ScrollableListView>
 
   void _setFullScreenMode() {
     // ✅ Make the screen full-screen with edge-to-edge display
+
     SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.bottom],
+      SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top],
     );
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
